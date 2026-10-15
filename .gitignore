@@ -6,6 +6,9 @@ backend/*.egg-info/
 frontend/node_modules/
 frontend/.next/
 frontend/*.tsbuildinfo
+frontend/.e2e/
+frontend/test-results/
+frontend/playwright-report/
 workspace.json
 workspace.json.tmp
 .env

@@ -1,7 +1,7 @@
 "use client";
 
 import { CopilotChat } from "@copilotkit/react-core/v2";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Proposal = { amount_cents: number; currency: string; reason: string } | null;
 type SupportCase = {
@@ -21,33 +21,46 @@ export default function Page() {
   const [cases, setCases] = useState<SupportCase[]>([]);
   const [selectedId, setSelectedId] = useState("case-104");
   const [detail, setDetail] = useState<Detail | null>(null);
-  const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
+  const [decisionError, setDecisionError] = useState("");
   const [busy, setBusy] = useState(false);
+  const selectedIdRef = useRef(selectedId);
+  const pendingRead = useRef<AbortController | null>(null);
+  selectedIdRef.current = selectedId;
 
   const refresh = useCallback(async () => {
+    if (selectedIdRef.current !== selectedId) return;
+    pendingRead.current?.abort();
+    const controller = new AbortController();
+    pendingRead.current = controller;
     try {
       const [listResponse, detailResponse] = await Promise.all([
-        fetch(`${api}/cases`, { cache: "no-store" }),
-        fetch(`${api}/cases/${selectedId}`, { cache: "no-store" }),
+        fetch(`${api}/cases`, { cache: "no-store", signal: controller.signal }),
+        fetch(`${api}/cases/${selectedId}`, { cache: "no-store", signal: controller.signal }),
       ]);
       if (!listResponse.ok || !detailResponse.ok) throw new Error("Workspace API is unavailable");
-      setCases(await listResponse.json());
-      setDetail(await detailResponse.json());
-      setError("");
+      const [list, nextDetail] = await Promise.all([listResponse.json(), detailResponse.json()]);
+      if (controller.signal.aborted || selectedIdRef.current !== selectedId) return;
+      setCases(list);
+      setDetail(nextDetail);
+      setLoadError("");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not load workspace");
+      if (controller.signal.aborted || selectedIdRef.current !== selectedId) return;
+      setLoadError(cause instanceof Error ? cause.message : "Could not load workspace");
     }
   }, [selectedId]);
 
   useEffect(() => {
     void refresh();
     const timer = window.setInterval(() => void refresh(), 2500);
-    return () => window.clearInterval(timer);
+    return () => { window.clearInterval(timer); pendingRead.current?.abort(); };
   }, [refresh]);
 
   async function decide(decision: "approve" | "reject") {
     if (!detail) return;
+    const decidingCase = detail.case.id;
     setBusy(true);
+    setDecisionError("");
     try {
       const response = await fetch(`${api}/cases/${detail.case.id}/decision`, {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -59,7 +72,9 @@ export default function Page() {
       }
       await refresh();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Decision failed");
+      if (selectedIdRef.current === decidingCase) {
+        setDecisionError(cause instanceof Error ? cause.message : "Decision failed");
+      }
       await refresh();
     } finally {
       setBusy(false);
@@ -67,6 +82,7 @@ export default function Page() {
   }
 
   const current = detail?.case;
+  const error = decisionError || loadError;
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -83,7 +99,10 @@ export default function Page() {
           <div className="case-list">
             {cases.map((item) => (
               <button key={item.id} className={`case-item ${item.id === selectedId ? "selected" : ""}`}
-                onClick={() => setSelectedId(item.id)}>
+                onClick={() => {
+                  if (item.id === selectedId) return;
+                  setDetail(null); setDecisionError(""); setLoadError(""); setSelectedId(item.id);
+                }}>
                 <span className="case-item-top"><span>{item.id.toUpperCase()}</span><span className={`status-dot ${item.status}`} /></span>
                 <strong>{item.subject}</strong>
                 <small>{item.customer}</small>

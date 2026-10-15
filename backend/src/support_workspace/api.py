@@ -17,7 +17,7 @@ class Decision(BaseModel):
 def create_app(workspace_path: Path, include_agent: bool = True) -> FastAPI:
     workspace = Workspace(workspace_path)
     app = FastAPI(title="Support copilot workspace")
-    app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:3000"],
+    app.add_middleware(CORSMiddleware, allow_origins=[os.getenv("SUPPORT_WEB_ORIGIN", "http://localhost:3000")],
                        allow_methods=["GET", "POST"], allow_headers=["*"])
 
     @app.get("/cases")

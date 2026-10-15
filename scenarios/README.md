@@ -8,4 +8,4 @@ Reset `workspace.json` from `fixtures/starter.json` before independent runs.
 4. **Processing order:** A proposal on `case-106` cannot be approved as a refund while the order is processing. The API returns a conflict and leaves payment state untouched.
 5. **Stale UI:** Save a proposal, then change the record before a decision with an older revision. The API returns 409; reload and review current state.
 
-These are live-model/UI verification targets. The offline backend tests check the state transitions only.
+The offline browser suite covers approval, rejection, ineligible-order and stale-revision decisions using seeded proposals and the real local API. It also holds a previous case read while selecting another case to check that delayed responses cannot replace the selection. See `frontend/e2e/approval.spec.ts`. These checks make no model request; case #3 and the copilot's proposal quality still need a live model proof.
