@@ -1,6 +1,7 @@
 """CopilotKit-exposed LangGraph agent with read and proposal tools."""
 import json
 import os
+from pydantic import StrictInt
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_openai import ChatOpenAI
@@ -27,7 +28,7 @@ def build_agent(workspace: Workspace):
             return json.dumps({"error": "unknown_case"})
 
     @tool
-    def propose_refund(case_id: str, amount_cents: int, reason: str) -> str:
+    def propose_refund(case_id: str, amount_cents: StrictInt, reason: str) -> str:
         """Save a refund proposal for operator approval; this does not issue a refund."""
         try:
             return json.dumps(workspace.propose(case_id, amount_cents, reason))

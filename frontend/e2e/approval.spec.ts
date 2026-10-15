@@ -10,7 +10,9 @@ test.beforeEach(() => {
   const data = JSON.parse(readFileSync(fixture, "utf8"));
   for (const item of data.cases) {
     if (item.id === "case-104" || item.id === "case-106") {
-      item.proposal = { amount_cents: item.id === "case-104" ? 2999 : 1000, currency: "USD", reason: "Seeded offline browser proposal" };
+      const order = data.orders.find((record: { id: string }) => record.id === item.order_id);
+      item.proposal = { amount_cents: item.id === "case-104" ? 2999 : 1000, currency: "USD", reason: "Seeded offline browser proposal",
+        binding: { order_id: order.id, customer_email: order.customer_email.toLowerCase(), currency: order.currency } };
       item.revision += 1;
     }
   }
@@ -66,6 +68,22 @@ test("a stale approval shows a conflict and reloads the changed proposal", async
   await expect(page.getByText("Updated while the operator reviewed")).toBeVisible();
   await expect(page.getByRole("alert").filter({ hasText: "case changed; reload before deciding" })).toBeVisible();
   expect(readState().refunds).toEqual([]);
+});
+
+test("a changed order currency cannot commit the operator's earlier USD proposal", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Approve refund" })).toBeEnabled();
+  await page.route("**/cases/case-104/decision", async route => {
+    const state = readState();
+    state.orders.find((item: { id: string }) => item.id === "order-104").currency = "CAD";
+    writeFileSync(statePath, JSON.stringify(state));
+    await route.continue();
+  });
+  await page.getByRole("button", { name: "Approve refund" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "create a fresh proposal" })).toBeVisible();
+  expect(readState().refunds).toEqual([]);
+  expect(readState().orders.find((item: { id: string }) => item.id === "order-104").refunded_cents).toBe(0);
+  await expect(page.getByText("COMMITTED RESULT")).toHaveCount(0);
 });
 
 test("a delayed read from the previous case cannot replace the selected case", async ({ page }) => {

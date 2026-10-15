@@ -2,7 +2,8 @@ import os
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from typing import Literal
+from pydantic import BaseModel, ConfigDict, Field
 from ag_ui_langgraph import add_langgraph_fastapi_endpoint
 from copilotkit import LangGraphAGUIAgent
 from .agent import build_agent
@@ -10,8 +11,9 @@ from .store import Workspace, Conflict
 
 
 class Decision(BaseModel):
-    revision: int
-    decision: str
+    model_config = ConfigDict(extra="forbid")
+    revision: int = Field(strict=True,ge=0)
+    decision: Literal["approve","reject"]
 
 
 def create_app(workspace_path: Path, include_agent: bool = True) -> FastAPI:
