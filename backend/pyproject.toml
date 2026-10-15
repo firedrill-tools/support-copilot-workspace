@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "support-copilot-backend"
+version = "0.1.0"
+description = "LangGraph support agent and approval-backed workspace API"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["langchain==1.4.6", "langchain-openai==1.7.2", "copilotkit==0.1.96", "ag-ui-langgraph==0.0.47", "fastapi==0.143.2", "uvicorn==0.54.0"]
+
+[project.scripts]
+support-workspace-api = "support_workspace.api:main"
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "httpx>=0.28,<1"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/support_workspace"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

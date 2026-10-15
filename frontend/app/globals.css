@@ -1,0 +1,41 @@
+:root{--ink:#252723;--muted:#797b76;--line:#e8e7e2;--bone:#f7f6f2;--paper:#fff;--green:#edf3ec;--green-ink:#346538;--red:#fdebec;--red-ink:#9f2f2d;--yellow:#fbf3db;--yellow-ink:#956400}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bone);color:var(--ink);font-family:"SF Pro Display","Helvetica Neue",Arial,sans-serif}
+button{font:inherit;cursor:pointer}
+.app-shell{min-height:100vh}
+.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--line);background:var(--paper)}
+.wordmark{font-size:12px;font-weight:750;letter-spacing:.19em;display:flex;align-items:center;gap:12px}
+.wordmark-square{display:block;width:15px;height:15px;background:#2d3930;transform:rotate(-12deg)}
+.topbar-center{font-size:13px;color:#555852}.topbar-divider{color:#c2c2bd;margin:0 11px}
+.environment{font:600 10px "SF Mono",monospace;letter-spacing:.12em;padding:8px 10px;border:1px solid #d8ded6;color:#436243;background:var(--green);border-radius:4px}
+.workspace-grid{display:grid;grid-template-columns:282px minmax(440px,1fr) minmax(330px,380px);min-height:calc(100vh - 72px)}
+.case-rail{padding:37px 20px 28px 24px;border-right:1px solid var(--line);background:#fbfaf7;display:flex;flex-direction:column}
+.eyebrow,.section-label{font:650 10px "SF Mono","JetBrains Mono",monospace;letter-spacing:.14em;color:#777a73}
+.eyebrow span{float:right;color:#a3a59f}
+.case-rail h1{font-family:"Lyon Text","Instrument Serif",Georgia,serif;font-weight:500;letter-spacing:-.05em;font-size:48px;line-height:1;margin:26px 0 10px}
+.rail-intro{color:var(--muted);font-size:13px;line-height:1.6;max-width:210px;margin:0 0 34px}
+.case-list{display:grid;gap:8px}
+.case-item{padding:17px 17px 18px;text-align:left;border:1px solid transparent;background:transparent;border-radius:8px;min-height:113px;transition:background .2s,border-color .2s,transform .2s;display:flex;flex-direction:column;gap:7px}
+.case-item:hover{background:#fff;transform:translateY(-2px)}.case-item.selected{background:#fff;border-color:#ddded8}
+.case-item-top{display:flex;align-items:center;justify-content:space-between;font:600 10px "SF Mono",monospace;color:#92958e;letter-spacing:.08em}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#c1b58b}.status-dot.refunded{background:#7e9f7d}.status-dot.rejected{background:#ba8585}
+.case-item strong{font-size:13px;line-height:1.35;font-weight:650}.case-item small{font-size:12px;color:var(--muted)}
+.rail-footer{margin-top:auto;padding:26px 7px 0;font:10px "SF Mono",monospace;color:#9b9c96}
+.case-main{padding:50px clamp(30px,4vw,74px) 70px;background:var(--paper);min-width:0}
+.case-heading{padding-bottom:50px;border-bottom:1px solid var(--line)}
+.title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-top:20px}
+.case-heading h2{font:500 clamp(35px,3vw,52px)/1.08 "Lyon Text","Instrument Serif",Georgia,serif;letter-spacing:-.045em;margin:0;max-width:580px}
+.case-heading p{font-size:13px;color:var(--muted);margin:21px 0 0}.separator{margin:0 10px;color:#c3c5bd}
+.status-badge{font:650 10px "SF Mono",monospace;text-transform:uppercase;letter-spacing:.09em;background:var(--yellow);color:var(--yellow-ink);border-radius:999px;padding:8px 11px;white-space:nowrap}
+.status-badge.refunded{background:var(--green);color:var(--green-ink)}.status-badge.rejected{background:var(--red);color:var(--red-ink)}
+.case-main>.section-label{margin-top:39px}.case-main blockquote{font:400 clamp(21px,2vw,28px)/1.45 "Lyon Text","Instrument Serif",Georgia,serif;letter-spacing:-.015em;margin:18px 0 46px;max-width:760px}
+.record-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.record-card{border:1px solid var(--line);border-radius:8px;padding:27px;min-height:228px;background:#fff}.record-card strong{display:block;font-size:22px;font-weight:560;letter-spacing:-.03em;margin:24px 0 20px}.record-line{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;margin-top:10px;font-size:12px}.record-line span:first-child{color:var(--muted)}
+.proposal-card{background:#fbfaf7}.proposal-card p{font-size:13px;line-height:1.6;color:#696d65;max-width:300px}.proposal-card .muted{margin-top:37px;color:#9b9d97}
+.decision-area{display:flex;justify-content:space-between;align-items:end;gap:24px;border-top:1px solid var(--line);margin-top:45px;padding-top:27px}.decision-area p{font-size:12px;color:var(--muted);line-height:1.6;max-width:320px;margin:12px 0 0}
+.decision-actions{display:flex;gap:9px}.decision-actions button{white-space:nowrap;padding:11px 14px;border-radius:5px;font-size:12px;font-weight:650;transition:background .2s,transform .2s}.decision-actions button:active{transform:scale(.98)}.decision-actions button:disabled{cursor:not-allowed;opacity:.42}
+.primary-button{background:#292b27;color:#fff;border:1px solid #292b27}.primary-button:hover:enabled{background:#464942}.secondary-button{background:#fff;color:#393c36;border:1px solid #d9dbd4}.secondary-button:hover:enabled{background:#f5f5f1}
+.resolution{margin-top:28px;padding:18px 22px;border:1px solid #dce8da;border-radius:8px;background:#f6faf5}.resolution p{margin:8px 0 0;font-size:13px}
+.copilot-panel{border-left:1px solid var(--line);background:#fbfaf7;display:flex;flex-direction:column;min-height:calc(100vh - 72px);min-width:0}.copilot-header{padding:38px 26px 26px;border-bottom:1px solid var(--line)}.copilot-header h2{font:500 31px/1.1 "Lyon Text","Instrument Serif",Georgia,serif;letter-spacing:-.04em;margin:16px 0 10px}.copilot-header p{color:var(--muted);font-size:12px;line-height:1.6;max-width:300px;margin:0}.chat-wrap{padding:8px;flex:1;min-height:480px}.chat{height:100%;min-height:470px;border:none!important;background:transparent!important}
+.error-banner{border:1px solid #e7c9c9;border-radius:6px;background:var(--red);color:var(--red-ink);padding:12px 14px;margin-bottom:22px;font-size:12px}.empty-state{padding:50px 0;color:var(--muted);font-family:Georgia,serif;font-size:24px}
+@media(max-width:1150px){.workspace-grid{grid-template-columns:230px minmax(380px,1fr)}.copilot-panel{grid-column:1/-1;min-height:520px;border-left:0;border-top:1px solid var(--line)}.chat-wrap{height:500px}.case-main{padding:42px 35px 60px}}
+@media(max-width:720px){.topbar{padding:0 18px;height:62px}.topbar-center{display:none}.workspace-grid{display:block}.case-rail{border-right:0;border-bottom:1px solid var(--line);padding:27px 18px}.case-rail h1{font-size:38px;margin:16px 0 5px}.rail-intro,.rail-footer{display:none}.case-list{display:flex;overflow-x:auto;margin-top:22px}.case-item{min-width:205px}.case-main{padding:36px 18px 54px}.case-heading{padding-bottom:35px}.record-grid{grid-template-columns:1fr}.decision-area{align-items:stretch;flex-direction:column}.decision-actions{width:100%}.decision-actions button{flex:1}.copilot-header{padding:30px 18px}.chat-wrap{height:500px}}
