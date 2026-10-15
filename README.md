@@ -4,7 +4,7 @@ A support workspace pairs a LangGraph/OpenAI agent with CopilotKit chat. The cop
 
 ## Run one case
 
-Requires Python 3.12, Node.js 20+, `uv` and npm. Listing/initialization need no credentials and make no model calls.
+Requires Python 3.12, Node.js 24 (used in CI), `uv` and npm. Listing/initialization need no credentials and make no model calls.
 
 ```sh
 cd backend
@@ -82,7 +82,7 @@ Install Chromium first with `npx playwright install chromium`, and keep `uv` on 
 
 **63 backend checks and eight Chromium cases passed locally.** Six browser cases use seeded proposals and the real decision API without a model endpoint. Two additional cases run the **production-built browser → CopilotKit → AG-UI → actual LangChain/OpenAI SDK → tools/API** path with test-only controlled model HTTP: read/proposal/approval, plus provider/nonfinal failures followed by recovery. They exposed and fixed early submission before discovery and invisible errors. A real approval screenshot is retained in ignored test output.
 
-Backend checks cover JSON/SSE completion, missing/partial/zero usage, compressed fragmentation, cancellation, provider failure after a proposal, client/checkpoint cleanup, concurrent chat serialization, caller ownership, financial guards, all eight datasets and preservation of unrelated busy history. The build verifies a wheel produced from its source archive, then exercises both artifacts outside the checkout. The pinned AG-UI adapter currently emits a third-party deprecation warning for its LangGraph schema call; the exercised interface still passes.
+Backend checks cover JSON/SSE completion, missing/partial/zero usage, compressed fragmentation, cancellation, provider failure after a proposal, client/checkpoint cleanup, concurrent chat serialization, caller ownership, financial guards, all eight datasets and preservation of unrelated busy history. The build verifies a wheel produced from its source archive, then exercises both artifacts outside the checkout. The pinned AG-UI adapter currently emits a third-party deprecation warning for its LangGraph schema call; the exercised interface still passes. The frontend pins KaTeX `0.18.2` with matching CSS, addressing the [inherited trust-setting advisory](https://github.com/advisories/GHSA-238p-pmpm-9mq7). Source HTML is sanitized before math rendering, with URL hardening retained. The production chat case verifies a styled fraction and removal of script/JavaScript-link output. Full npm audit is clean at this snapshot.
 
 These controlled HTTP responses are not paid model judgments or billing evidence. Live factuality, ambiguity handling and injection resistance remain unmeasured. [Scenario briefs](scenarios/README.md) keep semantic criteria separate from exact financial checks. Live provider access, the released Firedrill contract and publication/license choices remain external gates. Add the thin integration against the qualified new release; no guessed/retired API or private platform code is included.
 

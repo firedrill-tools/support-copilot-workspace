@@ -15,6 +15,12 @@ test("production chat runs native read/proposal tools and commits only after ope
   await input.fill("Inspect case-104 and propose the damaged scanner refund.");
   await input.press("Enter");
   await expect(page.locator(".chat-wrap")).toContainText("no refund has been issued");
+  const formula = page.locator(".chat-wrap .katex");
+  await expect(formula).toBeVisible();
+  await expect(formula.locator("mfrac")).toHaveCount(1);
+  await expect(formula.locator(".katex-html")).toHaveCSS("white-space", "nowrap");
+  await expect(page.locator(".chat-wrap script, .chat-wrap a[href^='javascript:']")).toHaveCount(0);
+  expect(await page.evaluate(() => "syntheticUnsafe" in window)).toBe(false);
   await expect(page.getByRole("button", { name: "Approve refund" })).toBeEnabled();
   expect(state().orders[0].refunded_cents).toBe(0);
   expect(state().refunds).toEqual([]);

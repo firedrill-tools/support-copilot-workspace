@@ -44,7 +44,8 @@ def create_app(workspace_path: Path, include_agent: bool = True, *, runtime_fact
         if not include_agent:
             yield
             return
-        async with (runtime_factory or AgentRuntime)(workspace) as runtime:
+        factory=AgentRuntime if runtime_factory is None else runtime_factory
+        async with factory(workspace) as runtime:
             app.state.runtime = runtime
             before = {id(route) for route in app.router.routes}
             try:

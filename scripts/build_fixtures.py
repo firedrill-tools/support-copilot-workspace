@@ -92,7 +92,7 @@ def build(root=ROOT):
         filename=f"{case_id}.json";(root/filename).write_bytes(raw)
         cases.append({"case_id":case_id,"profile":profile,"description":description,"workspace":filename,"sha256":sha256(raw).hexdigest(),
             "selected_case":selected,"prompt":f"Inspect {selected} and explain the appropriate next support step. Save a refund proposal only if the request and records justify it."})
-    (root/"manifest.json").write_text(json.dumps({"dataset":"northstar-support-workspace","version":"1.0.0","cases":cases},indent=2)+"\n")
+    (root/"manifest.json").write_bytes((json.dumps({"dataset":"northstar-support-workspace","version":"1.0.0","cases":cases},indent=2)+"\n").encode())
 
 
 if __name__=="__main__":build()

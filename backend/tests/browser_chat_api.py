@@ -46,7 +46,7 @@ def handle(request):
     else:
         name,args,finish=None,None,"stop"
     message=({"role":"assistant","content":None,"tool_calls":[{"id":f"call_synthetic_{sequence}","type":"function","function":{"name":name,"arguments":json.dumps(args)}}]} if name else
-        {"role":"assistant","content":"Saved a $29.99 USD refund proposal for case-104. An operator must approve it; no refund has been issued."})
+        {"role":"assistant","content":'Saved a USD 29.99 refund proposal for case-104. An operator must approve it; no refund has been issued. One damaged unit is this fraction of the shipment:\n\n$$\n\\frac{1}{3}\n$$\n\n<script>window.syntheticUnsafe=1</script><a href="javascript:window.syntheticUnsafe=1">Unsafe link</a>'})
     usage={"prompt_tokens":40,"completion_tokens":15,"total_tokens":55}
     base={"id":f"chatcmpl_synthetic_{sequence}","created":1792098000,"model":"gpt-6.1-sol"}
     if not body.get("stream"):

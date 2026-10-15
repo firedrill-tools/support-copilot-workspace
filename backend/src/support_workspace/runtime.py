@@ -38,10 +38,10 @@ class AgentRuntime:
         try:
             self.run_lock = asyncio.Lock()
             http = self.stack.enter_context(httpx2.Client(timeout=30, follow_redirects=False,
-                transport=ObservedTransport(self.workspace, self.sync_transport or httpx2.HTTPTransport(retries=0))))
+                transport=ObservedTransport(self.workspace, self.sync_transport if self.sync_transport is not None else httpx2.HTTPTransport(retries=0))))
             self.client = self.stack.enter_context(OpenAI(api_key=self.key, base_url=self.endpoint, max_retries=0, timeout=30, http_client=http))
             asynchronous = await self.stack.enter_async_context(httpx2.AsyncClient(timeout=30, follow_redirects=False,
-                transport=ObservedAsyncTransport(self.workspace, self.async_transport or httpx2.AsyncHTTPTransport(retries=0))))
+                transport=ObservedAsyncTransport(self.workspace, self.async_transport if self.async_transport is not None else httpx2.AsyncHTTPTransport(retries=0))))
             self.async_client = await self.stack.enter_async_context(AsyncOpenAI(api_key=self.key, base_url=self.endpoint, max_retries=0, timeout=30, http_client=asynchronous))
             model = ChatOpenAI(model=self.model_name, api_key=self.key, base_url=self.endpoint,
                 client=self.client.chat.completions, root_client=self.client,
