@@ -28,3 +28,5 @@ Copy the fixture to a new `workspace.json` to reset. One backend process owns th
 ## Verification and limits
 
 Run `cd backend && uv run pytest` and `cd frontend && npm run typecheck && npm run build`. Backend tests cover proposal without payment change, approval, rejection, stale revisions and ineligible orders. `scenarios/README.md` lists model/UI cases still to run with a provider key. No live model call or end-to-end chat proof has been made here. The Firedrill integration will use the new official interface after it is released and qualified. No public license has been selected.
+
+Explore related applications in the [Firedrill example catalog](https://github.com/firedrill-tools/firedrill-example-catalog). Product and setup references: [Firedrill](https://firedrill.run/) and the [official developer documentation](https://docs.firedrill.run/). Use documentation matching the qualified release; this repository records its current integration limits above.
