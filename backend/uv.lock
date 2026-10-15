@@ -1131,8 +1131,10 @@ dependencies = [
     { name = "ag-ui-langgraph" },
     { name = "copilotkit" },
     { name = "fastapi" },
+    { name = "httpx2" },
     { name = "langchain" },
     { name = "langchain-openai" },
+    { name = "openai" },
     { name = "uvicorn" },
 ]
 
@@ -1147,8 +1149,10 @@ requires-dist = [
     { name = "ag-ui-langgraph", specifier = "==0.0.47" },
     { name = "copilotkit", specifier = "==0.1.96" },
     { name = "fastapi", specifier = "==0.143.2" },
+    { name = "httpx2", specifier = "==2.13.1" },
     { name = "langchain", specifier = "==1.4.6" },
     { name = "langchain-openai", specifier = "==1.7.2" },
+    { name = "openai", specifier = "==3.31.0" },
     { name = "uvicorn", specifier = "==0.54.0" },
 ]
 

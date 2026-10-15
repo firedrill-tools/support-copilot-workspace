@@ -35,7 +35,7 @@ The local snapshot validates unique case/order/refund IDs, captured/refunded amo
 
 ## Verification and limits
 
-Run `cd backend && uv run pytest` and `cd frontend && npm run typecheck && npm run build`. Seventeen backend checks cover proposal-only effects, approval/rejection, stale revisions, ineligible orders, exact integer amounts, changed order/customer/currency bindings, legacy unknown scope, imported refund IDs and failed file publication.
+Run `cd backend && uv run pytest` and `cd frontend && npm run typecheck && npm run build`. Twenty-six backend checks cover proposal-only effects, approval/rejection, stale revisions, ineligible orders, exact integer amounts, changed order/customer/currency bindings, legacy unknown scope, imported refund IDs and failed file publication.
 
 The browser suite runs without a model key:
 
@@ -50,6 +50,10 @@ Keep `uv` on PATH and install the backend dependencies first with `cd backend &&
 
 On 2026-10-15, all six browser cases passed: a 2,999-cent refund persisted and remained visible after reload; rejection left payments unchanged; processing-order and stale-revision conflicts stayed visible; a delayed read of a previous case could not replace the selected case; and a USD proposal could not commit after the order changed to CAD. The suite caught a disappearing conflict message before the UI fix. It retains an actual approval screenshot under `frontend/test-results/`, plus traces/screenshots on failure. CI runs the same suite with Playwright `1.64.1` and retains synthetic browser evidence for seven days. Generated workspaces and browser artifacts are ignored by Git.
 
-`scenarios/README.md` distinguishes these local browser checks from the model behavior still to run. No live model call or end-to-end chat proof has been made here. The Firedrill integration will use the new official interface after it is released and qualified. No public license has been selected.
+Nine native checks retain actual LangChain/OpenAI implementations and the real `/agent` AG-UI adapter, replacing only model HTTP with controlled JSON/SSE. They reproduced a `length`-terminated tool call executing a proposal. A [LangChain after-model middleware guard](https://docs.langchain.com/oss/python/langchain/middleware/custom) now blocks nonfinal/refused/invalid/parallel output before tool dispatch, with matching synchronous and asynchronous hooks. The streaming error case emits RUN_ERROR without RUN_FINISHED or a proposal. A completed native loop saves only a proposal, never a refund. Calls are bounded to eight per run, 30-second HTTP timeouts, no automatic retry, 4,096 output tokens and no model cache/storage.
+
+`agent_observations` saves each returned SDK message, acceptance/error reason and conversation thread ID. `sdk_usage` is the SDK's measurement; raw transport-level `reported_usage` and cost remain unknown. Rejected messages stay in this durable evidence, but are removed from later provider context so a new turn has no unanswered tool-call ID. Streamed token/tool fragments can appear before validation; RUN_FINISHED and committed state determine completion.
+
+`scenarios/README.md` distinguishes these SDK/API/browser checks from live model behavior. No paid model call or complete browser chat proof has been made. Owned model/checkpointer lifecycle, raw transport usage/errors and expanded busy/ambiguous/boundary datasets remain development work. The Firedrill integration will use the new official interface after it is released and qualified. No public license has been selected.
 
 Explore related applications in the [Firedrill example catalog](https://github.com/firedrill-tools/firedrill-example-catalog). Product and setup references: [Firedrill](https://firedrill.run/) and the [official developer documentation](https://docs.firedrill.run/). Use documentation matching the qualified release; this repository records its current integration limits above.

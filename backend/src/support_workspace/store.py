@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from threading import Lock
+from uuid import uuid4
 from .contracts import WorkspaceData
 
 
@@ -41,6 +42,12 @@ class Workspace:
 
     def cases(self):
         return self._read()["cases"]
+
+    def observe_model(self,thread_id,observation):
+        with self.lock:
+            data=self._read()
+            data.setdefault("agent_observations",[]).append({"id":str(uuid4()),"thread_id":thread_id,**observation})
+            self._write(data)
 
     def case(self, case_id: str):
         data = self._read()
