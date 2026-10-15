@@ -1,20 +1,16 @@
 """CopilotKit-exposed LangGraph agent with read and proposal tools."""
 import json
-import os
 from pydantic import StrictInt
 from langchain.agents import create_agent
 from langchain.agents.middleware import ModelCallLimitMiddleware
 from langchain.tools import tool
-from langchain_openai import ChatOpenAI
 from copilotkit import CopilotKitMiddleware
-from langgraph.checkpoint.memory import MemorySaver
 from .store import Workspace, Conflict
 from .completion import CompletedResponse
 
 
-def build_agent(workspace: Workspace):
-    if not os.getenv("OPENAI_API_KEY"):
-        raise RuntimeError("OPENAI_API_KEY required for the support copilot")
+def build_agent(workspace: Workspace, *, model, checkpointer, require_provider=False):
+    """Build with caller-owned dependencies; AgentRuntime owns normal app resources."""
 
     @tool
     def list_cases() -> str:
@@ -38,12 +34,10 @@ def build_agent(workspace: Workspace):
             return json.dumps({"error": str(exc)})
 
     return create_agent(
-        model=ChatOpenAI(model=os.getenv("OPENAI_MODEL", "gpt-6.1-sol"),use_responses_api=False,
-                         timeout=30,max_retries=0,max_tokens=4096,store=False,cache=False,stream_usage=True,
-                         model_kwargs={"parallel_tool_calls":False}),
+        model=model,
         tools=[list_cases, inspect_case, propose_refund],
-        middleware=[CopilotKitMiddleware(),ModelCallLimitMiddleware(run_limit=8,exit_behavior="error"),CompletedResponse(workspace)],
-        checkpointer=MemorySaver(),
+        middleware=[CopilotKitMiddleware(),ModelCallLimitMiddleware(run_limit=8,exit_behavior="error"),CompletedResponse(workspace,require_provider=require_provider)],
+        checkpointer=checkpointer,
         system_prompt=("You assist a support operator. Inspect exact case and order records before advising. "
                        "You may save a refund proposal, but only the operator can approve or reject it in "
                        "the workspace. Never say a refund was issued until the committed case state says so. "

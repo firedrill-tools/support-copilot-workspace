@@ -19,5 +19,11 @@ dev = ["pytest>=8,<10", "httpx>=0.28,<1"]
 [tool.hatch.build.targets.wheel]
 packages = ["src/support_workspace"]
 
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "pyproject.toml", "README.md", "hatch_build.py"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

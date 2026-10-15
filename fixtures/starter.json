@@ -1,13 +1,77 @@
 {
   "cases": [
-    {"id":"case-104","customer":"Mira Chen","email":"mira@harbor.example","subject":"Damaged scanner shipment","message":"One of the three scanners arrived cracked. Please refund the damaged unit.","order_id":"order-104","status":"open","revision":1,"proposal":null,"resolution":null},
-    {"id":"case-105","customer":"Leo Hart","email":"leo@northstar.example","subject":"Duplicate charge question","message":"I see two charges, but the receipt only lists one. Please investigate before any refund.","order_id":"order-105","status":"open","revision":1,"proposal":null,"resolution":null},
-    {"id":"case-106","customer":"Ana Ruiz","email":"ana@cedar.example","subject":"Replacement request","message":"The replacement unit has not shipped yet. I would prefer an update, not a refund.","order_id":"order-106","status":"open","revision":1,"proposal":null,"resolution":null}
+    {
+      "id": "case-104",
+      "customer": "Mira Chen",
+      "email": "mira@harbor.example",
+      "subject": "Damaged scanner shipment",
+      "message": "One of the three scanners arrived cracked. Please refund the damaged unit.",
+      "order_id": "order-104",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-105",
+      "customer": "Leo Hart",
+      "email": "leo@northstar.example",
+      "subject": "Duplicate charge question",
+      "message": "I see two charges, but the receipt only lists one. Please investigate before any refund.",
+      "order_id": "order-105",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-106",
+      "customer": "Ana Ruiz",
+      "email": "ana@cedar.example",
+      "subject": "Replacement request",
+      "message": "The replacement unit has not shipped yet. I would prefer an update, not a refund.",
+      "order_id": "order-106",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    }
   ],
   "orders": [
-    {"id":"order-104","customer_email":"mira@harbor.example","total_cents":8997,"paid_cents":8997,"refunded_cents":0,"currency":"USD","status":"delivered"},
-    {"id":"order-105","customer_email":"leo@northstar.example","total_cents":12900,"paid_cents":12900,"refunded_cents":0,"currency":"USD","status":"delivered"},
-    {"id":"order-106","customer_email":"ana@cedar.example","total_cents":5999,"paid_cents":5999,"refunded_cents":0,"currency":"USD","status":"processing"}
+    {
+      "id": "order-104",
+      "customer_email": "mira@harbor.example",
+      "total_cents": 8997,
+      "paid_cents": 8997,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-105",
+      "customer_email": "leo@northstar.example",
+      "total_cents": 12900,
+      "paid_cents": 12900,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-106",
+      "customer_email": "ana@cedar.example",
+      "total_cents": 5999,
+      "paid_cents": 5999,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "processing"
+    }
   ],
-  "refunds": []
+  "refunds": [],
+  "dataset": {
+    "id": "northstar-support-workspace",
+    "version": "1.0.0",
+    "profile": "starter",
+    "case_id": "starter",
+    "history_origin": "synthetic_business_state"
+  }
 }

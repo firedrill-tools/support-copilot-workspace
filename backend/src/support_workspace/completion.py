@@ -2,6 +2,7 @@
 from langchain.agents.middleware import AgentMiddleware
 from langchain_core.messages import AIMessage,RemoveMessage
 from langgraph.config import get_config
+from .evidence import correlation
 
 
 class ResponseBoundaryError(RuntimeError):
@@ -11,8 +12,9 @@ class ResponseBoundaryError(RuntimeError):
 
 
 class CompletedResponse(AgentMiddleware):
-    def __init__(self, workspace):
+    def __init__(self, workspace, *, require_provider=False):
         self.workspace = workspace
+        self.require_provider = require_provider
 
     @staticmethod
     def problem(message):
@@ -36,8 +38,9 @@ class CompletedResponse(AgentMiddleware):
         # Rejected tool calls were never dispatched. Remove them from future
         # provider context so a later user turn has no unanswered tool-call ID.
         # Their original SDK message remains in the durable observation log.
+        rejected_ids=self.workspace.rejected_message_ids(get_config().get("configurable",{}).get("thread_id"))
         rejected=[RemoveMessage(id=message.id) for message in state["messages"]
-                  if isinstance(message,AIMessage) and message.id and self.problem(message)]
+                  if isinstance(message,AIMessage) and message.id and (self.problem(message) or message.id in rejected_ids)]
         return {"messages":rejected} if rejected else None
 
     async def abefore_model(self,state,runtime):
@@ -46,12 +49,25 @@ class CompletedResponse(AgentMiddleware):
     def after_model(self, state, runtime):
         message = state["messages"][-1]
         problem = self.problem(message)
+        context=correlation()
+        provider=self.workspace.latest_provider(context["thread_id"],context["run_id"]) if self.require_provider else None
+        if self.require_provider:
+            if provider is None:
+                problem=problem or "missing_http_observation"
+            elif provider["http_status"]!=200 or provider.get("provider_error") or provider["capture_error"] or provider["capture_truncated"]:
+                problem=problem or "invalid_http_observation"
+            elif provider["error_type"] not in (None,"GeneratorExit"):
+                problem=problem or "transport_did_not_complete"
+            elif (provider["stream"] and not provider["done_marker"]) or (not provider["stream"] and not provider["transport_complete"]):
+                problem=problem or "transport_did_not_complete"
         observation = {"source":"langchain_model_message", "sdk_message":message.model_dump(mode="json"),
-            "sdk_usage":getattr(message,"usage_metadata",None), "reported_usage":None, "cost_usd":None,
+            **context,"provider_observation_id":provider["id"] if provider else None,
+            "sdk_usage":getattr(message,"usage_metadata",None), "reported_usage":provider["reported_usage"] if provider else None,
+            "usage":provider["usage"] if provider else None,"cost_usd":None,
             "accepted":problem is None,"protocol_error":problem}
         config = get_config()
         thread_id = config.get("configurable",{}).get("thread_id")
-        self.workspace.observe_model(thread_id,observation)
+        observation=self.workspace.observe_model(thread_id,observation)
         if problem:
             raise ResponseBoundaryError(problem,observation)
 

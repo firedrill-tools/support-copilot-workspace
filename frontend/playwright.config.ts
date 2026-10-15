@@ -22,9 +22,9 @@ export default defineConfig({
       gracefulShutdown: { signal: "SIGTERM", timeout: 3000 },
     },
     {
-      command: "npm run dev -- --hostname 127.0.0.1 --port 3300",
+      command: "npm run dev -- --port 3300",
       url: "http://127.0.0.1:3300",
-      env: { NEXT_PUBLIC_SUPPORT_API_URL: "http://127.0.0.1:38123", SUPPORT_AGENT_URL: "http://127.0.0.1:38123/agent", NEXT_TELEMETRY_DISABLED: "1" },
+      env: { NEXT_PUBLIC_SUPPORT_API_URL: "http://127.0.0.1:38123", SUPPORT_AGENT_URL: "http://127.0.0.1:38123/agent", NEXT_TELEMETRY_DISABLED: "1", COPILOTKIT_TELEMETRY_DISABLED: "true" },
       reuseExistingServer: false,
       timeout: 60000,
       gracefulShutdown: { signal: "SIGTERM", timeout: 3000 },

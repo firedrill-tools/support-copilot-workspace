@@ -11,9 +11,15 @@ jobs:
       - working-directory: backend
         run: uv sync --dev --locked
       - working-directory: backend
-        run: uv run pytest
+        run: uv run --no-sync pytest -q
+      - working-directory: backend
+        run: uv run --no-sync support-workspace-api --help
+      - working-directory: backend
+        run: uv run --no-sync support-workspace-api --list-cases
       - working-directory: backend
         run: uv build
+      - working-directory: backend
+        run: uv run --no-sync python ../scripts/check_package.py
   frontend:
     runs-on: ubuntu-latest
     steps:
@@ -34,10 +40,16 @@ jobs:
         run: npm run typecheck
       - working-directory: frontend
         run: npm run build
+        env:
+          NEXT_PUBLIC_SUPPORT_API_URL: http://127.0.0.1:38123
+          NEXT_TELEMETRY_DISABLED: '1'
+          COPILOTKIT_TELEMETRY_DISABLED: 'true'
       - working-directory: frontend
         run: npx playwright install --with-deps chromium
       - working-directory: frontend
         run: npm run test:e2e
+      - working-directory: frontend
+        run: npm run test:chat
       - uses: actions/upload-artifact@v4
         if: always()
         with:

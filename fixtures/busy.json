@@ -1,0 +1,466 @@
+{
+  "cases": [
+    {
+      "id": "case-104",
+      "customer": "Mira Chen",
+      "email": "mira@harbor.example",
+      "subject": "Damaged scanner shipment",
+      "message": "One of the three scanners arrived cracked. Please refund the damaged unit.",
+      "order_id": "order-104",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-105",
+      "customer": "Leo Hart",
+      "email": "leo@northstar.example",
+      "subject": "Duplicate charge question",
+      "message": "I see two charges, but the receipt only lists one. Please investigate before any refund.",
+      "order_id": "order-105",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-106",
+      "customer": "Ana Ruiz",
+      "email": "ana@cedar.example",
+      "subject": "Replacement request",
+      "message": "The replacement unit has not shipped yet. I would prefer an update, not a refund.",
+      "order_id": "order-106",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-107",
+      "customer": "Nora Bell",
+      "email": "customer107@customer107.example",
+      "subject": "Missing dock adapter",
+      "message": "A dock adapter was missing. Please check the shipment.",
+      "order_id": "order-107",
+      "status": "refunded",
+      "revision": 3,
+      "proposal": {
+        "amount_cents": 1600,
+        "currency": "USD",
+        "reason": "Fictional previously approved damaged-item refund",
+        "binding": {
+          "order_id": "order-107",
+          "customer_email": "customer107@customer107.example",
+          "currency": "USD"
+        }
+      },
+      "resolution": {
+        "id": "refund-002",
+        "case_id": "case-107",
+        "order_id": "order-107",
+        "amount_cents": 1600,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "case-108",
+      "customer": "Owen Reed",
+      "email": "customer108@customer108.example",
+      "subject": "Damaged peripheral",
+      "message": "A peripheral arrived damaged; can we discuss a partial refund?",
+      "order_id": "order-108",
+      "status": "refunded",
+      "revision": 3,
+      "proposal": {
+        "amount_cents": 4599,
+        "currency": "USD",
+        "reason": "Fictional previously approved damaged-item refund",
+        "binding": {
+          "order_id": "order-108",
+          "customer_email": "customer108@customer108.example",
+          "currency": "USD"
+        }
+      },
+      "resolution": {
+        "id": "refund-007",
+        "case_id": "case-108",
+        "order_id": "order-108",
+        "amount_cents": 4599,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "case-109",
+      "customer": "Samira Ali",
+      "email": "customer109@customer109.example",
+      "subject": "Delivery timing",
+      "message": "Please check delivery timing before changing the order.",
+      "order_id": "order-109",
+      "status": "rejected",
+      "revision": 3,
+      "proposal": {
+        "amount_cents": 1500,
+        "currency": "USD",
+        "reason": "Previously reviewed replacement accessory",
+        "binding": {
+          "order_id": "order-109",
+          "customer_email": "customer109@customer109.example",
+          "currency": "USD"
+        }
+      },
+      "resolution": {
+        "reason": "Proposal rejected by support operator"
+      }
+    },
+    {
+      "id": "case-110",
+      "customer": "Theo Kim",
+      "email": "customer110@customer110.example",
+      "subject": "Missing dock adapter",
+      "message": "A dock adapter was missing. Please check the shipment.",
+      "order_id": "order-110",
+      "status": "open",
+      "revision": 2,
+      "proposal": {
+        "amount_cents": 1500,
+        "currency": "USD",
+        "reason": "Pending accessory proposal for operator review",
+        "binding": {
+          "order_id": "order-110",
+          "customer_email": "customer110@customer110.example",
+          "currency": "USD"
+        }
+      },
+      "resolution": null
+    },
+    {
+      "id": "case-111",
+      "customer": "Imani Cole",
+      "email": "customer111@customer111.example",
+      "subject": "Damaged peripheral",
+      "message": "A peripheral arrived damaged; can we discuss a partial refund?",
+      "order_id": "order-111",
+      "status": "open",
+      "revision": 2,
+      "proposal": {
+        "amount_cents": 2000,
+        "currency": "USD",
+        "reason": "Pending damaged-item proposal for operator review",
+        "binding": {
+          "order_id": "order-111",
+          "customer_email": "customer111@customer111.example",
+          "currency": "USD"
+        }
+      },
+      "resolution": null
+    },
+    {
+      "id": "case-112",
+      "customer": "Luca Rossi",
+      "email": "customer112@customer112.example",
+      "subject": "Delivery timing",
+      "message": "Please check delivery timing before changing the order.",
+      "order_id": "order-112",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-113",
+      "customer": "Priya Shah",
+      "email": "customer113@customer113.example",
+      "subject": "Missing dock adapter",
+      "message": "A dock adapter was missing. Please check the shipment.",
+      "order_id": "order-113",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-114",
+      "customer": "Felix Hart",
+      "email": "customer114@customer114.example",
+      "subject": "Damaged peripheral",
+      "message": "A peripheral arrived damaged; can we discuss a partial refund?",
+      "order_id": "order-114",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-115",
+      "customer": "Mei Tan",
+      "email": "customer115@customer115.example",
+      "subject": "Delivery timing",
+      "message": "Please check delivery timing before changing the order.",
+      "order_id": "order-115",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-116",
+      "customer": "Rafael Cruz",
+      "email": "customer116@customer116.example",
+      "subject": "Missing dock adapter",
+      "message": "A dock adapter was missing. Please check the shipment.",
+      "order_id": "order-116",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-117",
+      "customer": "Ada Brooks",
+      "email": "customer117@customer117.example",
+      "subject": "Damaged peripheral",
+      "message": "A peripheral arrived damaged; can we discuss a partial refund?",
+      "order_id": "order-117",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-118",
+      "customer": "Dara Moon",
+      "email": "customer118@customer118.example",
+      "subject": "Delivery timing",
+      "message": "Please check delivery timing before changing the order.",
+      "order_id": "order-118",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-119",
+      "customer": "Casey Lane",
+      "email": "customer119@customer119.example",
+      "subject": "Missing dock adapter",
+      "message": "A dock adapter was missing. Please check the shipment.",
+      "order_id": "order-119",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-120",
+      "customer": "Jo Park",
+      "email": "customer120@customer120.example",
+      "subject": "Damaged peripheral",
+      "message": "A peripheral arrived damaged; can we discuss a partial refund?",
+      "order_id": "order-120",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    },
+    {
+      "id": "case-121",
+      "customer": "Leila Moreno",
+      "email": "customer121@customer121.example",
+      "subject": "Delivery timing",
+      "message": "Please check delivery timing before changing the order.",
+      "order_id": "order-121",
+      "status": "open",
+      "revision": 1,
+      "proposal": null,
+      "resolution": null
+    }
+  ],
+  "orders": [
+    {
+      "id": "order-104",
+      "customer_email": "mira@harbor.example",
+      "total_cents": 8997,
+      "paid_cents": 8997,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-105",
+      "customer_email": "leo@northstar.example",
+      "total_cents": 12900,
+      "paid_cents": 12900,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-106",
+      "customer_email": "ana@cedar.example",
+      "total_cents": 5999,
+      "paid_cents": 5999,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "processing"
+    },
+    {
+      "id": "order-107",
+      "customer_email": "customer107@customer107.example",
+      "total_cents": 15000,
+      "paid_cents": 15000,
+      "refunded_cents": 1600,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-108",
+      "customer_email": "customer108@customer108.example",
+      "total_cents": 15425,
+      "paid_cents": 15425,
+      "refunded_cents": 4599,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-109",
+      "customer_email": "customer109@customer109.example",
+      "total_cents": 15850,
+      "paid_cents": 15850,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-110",
+      "customer_email": "customer110@customer110.example",
+      "total_cents": 16275,
+      "paid_cents": 16275,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "processing"
+    },
+    {
+      "id": "order-111",
+      "customer_email": "customer111@customer111.example",
+      "total_cents": 16700,
+      "paid_cents": 16700,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-112",
+      "customer_email": "customer112@customer112.example",
+      "total_cents": 17125,
+      "paid_cents": 17125,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-113",
+      "customer_email": "customer113@customer113.example",
+      "total_cents": 17550,
+      "paid_cents": 17550,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-114",
+      "customer_email": "customer114@customer114.example",
+      "total_cents": 17975,
+      "paid_cents": 17975,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-115",
+      "customer_email": "customer115@customer115.example",
+      "total_cents": 18400,
+      "paid_cents": 18400,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "processing"
+    },
+    {
+      "id": "order-116",
+      "customer_email": "customer116@customer116.example",
+      "total_cents": 18825,
+      "paid_cents": 18825,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-117",
+      "customer_email": "customer117@customer117.example",
+      "total_cents": 19250,
+      "paid_cents": 19250,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-118",
+      "customer_email": "customer118@customer118.example",
+      "total_cents": 19675,
+      "paid_cents": 19675,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-119",
+      "customer_email": "customer119@customer119.example",
+      "total_cents": 20100,
+      "paid_cents": 20100,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    },
+    {
+      "id": "order-120",
+      "customer_email": "customer120@customer120.example",
+      "total_cents": 20525,
+      "paid_cents": 20525,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "processing"
+    },
+    {
+      "id": "order-121",
+      "customer_email": "customer121@customer121.example",
+      "total_cents": 20950,
+      "paid_cents": 20950,
+      "refunded_cents": 0,
+      "currency": "USD",
+      "status": "delivered"
+    }
+  ],
+  "refunds": [
+    {
+      "id": "refund-002",
+      "case_id": "case-107",
+      "order_id": "order-107",
+      "amount_cents": 1600,
+      "currency": "USD"
+    },
+    {
+      "id": "refund-007",
+      "case_id": "case-108",
+      "order_id": "order-108",
+      "amount_cents": 4599,
+      "currency": "USD"
+    }
+  ],
+  "dataset": {
+    "id": "northstar-support-workspace",
+    "version": "1.0.0",
+    "profile": "busy",
+    "case_id": "busy",
+    "history_origin": "synthetic_business_state"
+  }
+}

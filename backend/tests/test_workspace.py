@@ -3,7 +3,7 @@ from copy import deepcopy
 import json
 import pytest
 from fastapi.testclient import TestClient
-from support_workspace.agent import build_agent
+from support_workspace.runtime import AgentRuntime
 from support_workspace.api import create_app
 from support_workspace.store import Workspace, Conflict
 
@@ -54,7 +54,7 @@ def test_order_rules_and_http_state(tmp_path):
 def test_agent_key_boundary(tmp_path, monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     with pytest.raises(RuntimeError, match="OPENAI_API_KEY"):
-        build_agent(state(tmp_path))
+        AgentRuntime(state(tmp_path))
 
 
 @pytest.mark.parametrize("change",["currency","customer","order"])

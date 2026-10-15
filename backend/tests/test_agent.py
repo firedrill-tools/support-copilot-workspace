@@ -5,11 +5,9 @@ import json
 
 import httpx2
 from fastapi.testclient import TestClient
-from langchain_openai import ChatOpenAI
-from openai import OpenAI,AsyncOpenAI
 import pytest
 
-from support_workspace import agent
+from support_workspace.runtime import AgentRuntime
 from support_workspace.api import create_app
 from support_workspace.completion import ResponseBoundaryError
 from test_workspace import state
@@ -23,8 +21,9 @@ def tool_message(name="propose_refund",arguments=None):
 
 
 class Script(httpx2.MockTransport):
-    def __init__(self,choices):
+    def __init__(self,choices,*,usage=USAGE,done=True):
         self.choices,self.requests=choices,[]
+        self.usage,self.done=usage,done
         super().__init__(self.handle)
     def handle(self,request):
         self.requests.append(request)
@@ -33,7 +32,7 @@ class Script(httpx2.MockTransport):
         assert request.url.path=="/v1/chat/completions"
         if not body.get("stream"):
             return httpx2.Response(200,json={"id":"chatcmpl_synthetic","object":"chat.completion","created":1792098000,
-                "model":"gpt-6.1-sol","choices":[{"index":0,**choice}],"usage":USAGE})
+                "model":"gpt-6.1-sol","choices":[{"index":0,**choice}],"usage":self.usage})
         assert body["stream_options"]["include_usage"] is True
         delta={**choice["message"]}
         if "tool_calls" in delta:
@@ -41,8 +40,8 @@ class Script(httpx2.MockTransport):
         base={"id":"chatcmpl_synthetic","object":"chat.completion.chunk","created":1792098000,"model":"gpt-6.1-sol"}
         chunks=[{**base,"choices":[{"index":0,"delta":delta,"finish_reason":None}]},
             {**base,"choices":[{"index":0,"delta":{},"finish_reason":choice["finish_reason"]}]},
-            {**base,"choices":[],"usage":USAGE}]
-        stream="".join("data: "+json.dumps(chunk)+"\n\n" for chunk in chunks)+"data: [DONE]\n\n"
+            {**base,"choices":[],"usage":self.usage}]
+        stream="".join("data: "+json.dumps(chunk)+"\n\n" for chunk in chunks)+("data: [DONE]\n\n" if self.done else "")
         return httpx2.Response(200,content=stream,headers={"content-type":"text/event-stream"})
 
 
@@ -61,33 +60,23 @@ def native(monkeypatch):
     monkeypatch.setenv("LANGCHAIN_TRACING_V2","false")
     for name in ("OPENAI_BASE_URL","OPENAI_API_BASE"):
         monkeypatch.delenv(name,raising=False)
-    resources=[]
-    def make(choices):
-        script=Script(choices)
-        http=httpx2.Client(transport=script)
-        asynchronous=httpx2.AsyncClient(transport=script)
-        client=OpenAI(api_key="synthetic-not-a-secret",max_retries=0,http_client=http)
-        async_client=AsyncOpenAI(api_key="synthetic-not-a-secret",max_retries=0,http_client=asynchronous)
-        resources.append((client,async_client))
-        def model(**kwargs):
-            return ChatOpenAI(client=client.chat.completions,root_client=client,
-                async_client=async_client.chat.completions,root_async_client=async_client,**kwargs)
-        monkeypatch.setattr(agent,"ChatOpenAI",model)
-        return script
-    yield make
-    for client,async_client in resources:
-        client.close();asyncio.run(async_client.close())
+    def make(choices,**kwargs):
+        return Script(choices,**kwargs)
+    return make
 
 
-def invoke(workspace):
-    return agent.build_agent(workspace).invoke({"messages":[{"role":"user","content":"Inspect case-104 and propose a refund for the damaged scanner."}]},
-                                              config={"configurable":{"thread_id":"synthetic-thread"}})
+def invoke(workspace,script):
+    async def call():
+        async with AgentRuntime(workspace,sync_transport=script,async_transport=script) as runtime:
+            return runtime.invoke({"messages":[{"role":"user","content":"Inspect case-104 and propose a refund for the damaged scanner."}]},
+                                  thread_id="synthetic-thread",run_id="synthetic-run")
+    return asyncio.run(call())
 
 
 def test_native_tool_loop_creates_only_a_proposal_and_saves_sdk_evidence(tmp_path,native):
     workspace=state(tmp_path)
     script=native([choice(),FINAL])
-    result=invoke(workspace)
+    result=invoke(workspace,script)
     assert len(script.requests)==2 and "operator review" in result["messages"][-1].text
     assert workspace.case("case-104")["case"]["proposal"]["amount_cents"]==2999
     assert workspace.case("case-104")["refunds"]==[]
@@ -97,14 +86,14 @@ def test_native_tool_loop_creates_only_a_proposal_and_saves_sdk_evidence(tmp_pat
     assert json.loads(tool_result["content"])["proposal"]["binding"]["order_id"]=="order-104"
     observations=json.loads(workspace.path.read_text())["agent_observations"]
     assert len(observations)==2 and all(item["accepted"] for item in observations)
-    assert all(item["thread_id"]=="synthetic-thread" and item["reported_usage"] is None and item["cost_usd"] is None for item in observations)
+    assert all(item["thread_id"]=="synthetic-thread" and item["reported_usage"] == USAGE and item["cost_usd"] is None for item in observations)
     assert observations[0]["sdk_usage"]["total_tokens"]==30
 
 
 @pytest.mark.parametrize("finish",["length","content_filter",None])
 def test_nonfinal_native_tool_call_cannot_mutate_pending_proposal(tmp_path,native,finish):
     workspace=state(tmp_path);script=native([choice(finish=finish),FINAL])
-    with pytest.raises(ResponseBoundaryError) as error:invoke(workspace)
+    with pytest.raises(ResponseBoundaryError) as error:invoke(workspace,script)
     assert len(script.requests)==1 and workspace.case("case-104")["case"]["proposal"] is None
     observation=json.loads(workspace.path.read_text())["agent_observations"][0]
     assert not observation["accepted"] and observation["protocol_error"]=="tool_response_not_completed"
@@ -116,16 +105,16 @@ def test_parallel_native_tools_and_blank_final_answer_are_rejected(tmp_path,nati
     workspace=state(tmp_path)
     message=tool_message();message["tool_calls"].append({**message["tool_calls"][0],"id":"second_call"})
     script=native([choice(message)])
-    with pytest.raises(ResponseBoundaryError,match="parallel"):invoke(workspace)
+    with pytest.raises(ResponseBoundaryError,match="parallel"):invoke(workspace,script)
     assert workspace.case("case-104")["case"]["proposal"] is None and len(script.requests)==1
     script=native([choice({"role":"assistant","content":" "},"stop")])
-    with pytest.raises(ResponseBoundaryError,match="answer_not_completed"):invoke(workspace)
+    with pytest.raises(ResponseBoundaryError,match="answer_not_completed"):invoke(workspace,script)
     assert len(script.requests)==1
 
 
 def test_repeated_native_reads_stop_at_eight_model_calls_without_refunds(tmp_path,native):
     workspace=state(tmp_path);script=native([choice(tool_message("list_cases",{}))])
-    with pytest.raises(Exception) as error:invoke(workspace)
+    with pytest.raises(Exception) as error:invoke(workspace,script)
     assert "limit" in str(error.value).lower()
     assert len(script.requests)==8 and workspace.case("case-104")["refunds"]==[]
     assert len(json.loads(workspace.path.read_text())["agent_observations"])==8
@@ -133,11 +122,12 @@ def test_repeated_native_reads_stop_at_eight_model_calls_without_refunds(tmp_pat
 
 def test_later_user_turn_removes_rejected_unanswered_call_but_keeps_original_evidence(tmp_path,native):
     workspace=state(tmp_path);script=native([choice(finish="length"),choice(),FINAL])
-    graph=agent.build_agent(workspace)
-    config={"configurable":{"thread_id":"recovery-thread"}}
-    with pytest.raises(ResponseBoundaryError):
-        graph.invoke({"messages":[{"role":"user","content":"Propose the damaged scanner refund."}]},config=config)
-    graph.invoke({"messages":[{"role":"user","content":"Try again with a completed response."}]},config=config)
+    async def call():
+        async with AgentRuntime(workspace,sync_transport=script,async_transport=script) as runtime:
+            with pytest.raises(ResponseBoundaryError):
+                runtime.invoke({"messages":[{"role":"user","content":"Propose the damaged scanner refund."}]},thread_id="recovery-thread",run_id="failed-run")
+            runtime.invoke({"messages":[{"role":"user","content":"Try again with a completed response."}]},thread_id="recovery-thread",run_id="retry-run")
+    asyncio.run(call())
     retried=json.loads(script.requests[1].content)
     assert not any(message.get("tool_calls") for message in retried["messages"])
     assert len(script.requests)==3 and workspace.case("case-104")["case"]["proposal"]["amount_cents"]==2999
@@ -152,7 +142,7 @@ def test_real_agui_endpoint_streams_sdk_loop_or_error_before_proposal_dispatch(t
     body={"threadId":"agui-synthetic-thread","runId":"agui-synthetic-run","state":{},
         "messages":[{"id":"user-synthetic","role":"user","content":"Inspect case-104 and propose the damaged scanner refund."}],
         "tools":[],"context":[],"forwardedProps":{}}
-    with TestClient(create_app(workspace.path)) as client:
+    with TestClient(create_app(workspace.path,runtime_factory=lambda workspace:AgentRuntime(workspace,sync_transport=script,async_transport=script))) as client:
         response=client.post("/agent",json=body,headers={"accept":"text/event-stream"})
     assert response.status_code==200
     events=[json.loads(line.removeprefix("data: ")) for line in response.text.splitlines() if line.startswith("data: ")]

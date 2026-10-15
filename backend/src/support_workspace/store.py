@@ -1,6 +1,7 @@
 """Committed workspace state shared by HTTP UI and agent tools."""
 import json
 import os
+from hashlib import sha256
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from threading import Lock
@@ -46,8 +47,44 @@ class Workspace:
     def observe_model(self,thread_id,observation):
         with self.lock:
             data=self._read()
-            data.setdefault("agent_observations",[]).append({"id":str(uuid4()),"thread_id":thread_id,**observation})
+            event={"id":str(uuid4()),"thread_id":thread_id,**observation}
+            data.setdefault("agent_observations",[]).append(event)
             self._write(data)
+            return event
+
+    def observe_provider(self,event):
+        with self.lock:
+            data=self._read()
+            data.setdefault("provider_observations",[]).append(event)
+            self._write(data)
+
+    def latest_provider(self,thread_id,run_id):
+        data=self._read()
+        matched=[item for item in data.get("provider_observations",[]) if item.get("thread_id")==thread_id and item.get("run_id")==run_id]
+        return matched[-1] if matched else None
+
+    def rejected_message_ids(self,thread_id):
+        return {item["sdk_message"]["id"] for item in self._read().get("agent_observations",[])
+                if item.get("thread_id")==thread_id and item.get("accepted") is False and item.get("sdk_message",{}).get("id")}
+
+    def evidence(self,thread_id,run_id=None):
+        data=self._read()
+        selected=lambda item:item.get("thread_id")==thread_id and (run_id is None or item.get("run_id")==run_id)
+        providers=[item for item in data.get("provider_observations",[]) if selected(item)]
+        models=[item for item in data.get("agent_observations",[]) if selected(item)]
+        keys=("input_tokens","output_tokens","total_tokens")
+        complete=bool(providers) and all(item.get("usage_complete") for item in providers)
+        return {"thread_id":thread_id,"run_id":run_id,"provider_observations":providers,"agent_observations":models,
+                "initial_state":providers[0].get("initial_state") if providers else None,"current_state":self.snapshot(),
+                "http_attempts":len(providers),"usage_complete":complete,
+                "usage":{key:sum(item["usage"][key] for item in providers) for key in keys} if complete else None,"cost_usd":None}
+
+    def snapshot(self):
+        raw=self.path.read_bytes()
+        data=json.loads(raw);WorkspaceData.model_validate(data)
+        business={key:data[key] for key in ("cases","orders","refunds")}
+        return {"file_sha256":sha256(raw).hexdigest(),"business_state_sha256":sha256(json.dumps(business,sort_keys=True).encode()).hexdigest(),
+                "declared_dataset":data.get("dataset")}
 
     def case(self, case_id: str):
         data = self._read()

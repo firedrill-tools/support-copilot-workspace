@@ -1,6 +1,6 @@
 "use client";
 
-import { CopilotChat } from "@copilotkit/react-core/v2";
+import { SupportChat } from "./support-chat";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type Proposal = { amount_cents: number; currency: string; reason: string } | null;
@@ -160,7 +160,7 @@ export default function Page() {
         <aside className="copilot-panel">
           <div className="copilot-header"><span className="eyebrow">ASSISTANT</span><h2>Case copilot</h2>
             <p>Ask it to inspect a case and prepare a proposal. Check the record before approving.</p></div>
-          <div className="chat-wrap"><CopilotChat agentId="support_agent" className="chat" /></div>
+          <div className="chat-wrap"><SupportChat /></div>
         </aside>
       </div>
     </main>

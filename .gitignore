@@ -11,6 +11,8 @@ frontend/test-results/
 frontend/playwright-report/
 workspace.json
 workspace.json.tmp
+.runs/
+run-output/
 .*.tmp
 .env
 .env.local
