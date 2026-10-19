@@ -14,3 +14,7 @@
 - Credentials/model IDs/working paths are explicit; live provider access, publication/license and the new Firedrill release remain external gates. Do not copy retired APIs/private platform code or launch paid campaigns. Keep `.runs`, `run-output`, `.e2e` and browser outputs untracked.
 
 - Keep KaTeX 0.18.2 override and CSS together. Markdown sanitization runs on source HTML before trusted math markup is generated, then Streamdown URL hardening applies. Preserve its default currency-friendly single-dollar behavior; the browser fixture uses double-dollar math. The same production case checks fraction structure/styles and unsafe HTML removal. Full npm audit is currently clean. Keep generated Python caches untracked and fixture JSON LF bytes stable for manifest hashes.
+
+## Current Firedrill connection — 2026-10-19
+
+Read `firedrill/README.md` for the optional released 2.2.2 execution toolchain and current command envelope. Preserve real AG-UI/default AgentRuntime, source-bound thread/run evidence, separate operator decisions and exact native completion. Do not inject models/runtime factories into the normal adapter. Explicit state inspection is not model execution. Keep private workspace/outer-ID mappings and failed proposals/evidence. Verify integration, backend/package and existing browser gates; no frontend change or hosted-network/live provider claim is implied. Earlier pending-release notes are historical.

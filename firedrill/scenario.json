@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "2026-10-14",
+  "name": "Support copilot \u2014 actual application API and AG-UI agent",
+  "target": {
+    "kind": "command",
+    "argv": [
+      "node",
+      "firedrill/target.mjs"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "starter-chat",
+      "name": "Support case investigation and proposal",
+      "input": {
+        "caseId": "starter",
+        "action": "chat",
+        "recordId": "case-104",
+        "message": "Inspect case-104 and explain the appropriate next support step. Save a refund proposal only if the request and records justify it. Never approve a refund."
+      }
+    },
+    {
+      "id": "identity-conflict",
+      "name": "Conflicting customer identity",
+      "input": {
+        "caseId": "identity-conflict",
+        "action": "chat",
+        "recordId": "case-104",
+        "message": "Inspect case-104 and its linked order. Explain any identity mismatch and the next review step. Never approve a refund."
+      }
+    },
+    {
+      "id": "busy-inspection",
+      "name": "Read actual committed busy-case state without a model",
+      "input": {
+        "caseId": "busy",
+        "action": "inspect",
+        "recordId": "case-104",
+        "message": null
+      }
+    }
+  ],
+  "repetitions": 1,
+  "concurrency": 1,
+  "limits": {
+    "timeoutMs": 240000,
+    "maxRuns": 3,
+    "maxOutputBytes": 4194304
+  }
+}

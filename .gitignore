@@ -17,3 +17,5 @@ run-output/
 .*.tmp
 .env
 .env.local
+
+node_modules/

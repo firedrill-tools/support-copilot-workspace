@@ -87,3 +87,7 @@ Backend checks cover JSON/SSE completion, missing/partial/zero usage, compressed
 These controlled HTTP responses are not paid model judgments or billing evidence. Live factuality, ambiguity handling and injection resistance remain unmeasured. [Scenario briefs](scenarios/README.md) keep semantic criteria separate from exact financial checks. Live provider access, the released Firedrill contract and publication/license choices remain external gates. Add the thin integration against the qualified new release; no guessed/retired API or private platform code is included.
 
 Related applications: [Firedrill example catalog](https://github.com/firedrill-tools/firedrill-example-catalog). Product/setup: [Firedrill](https://firedrill.run/) and [official developer documentation](https://docs.firedrill.run/), matched to the qualified release.
+
+## Current Firedrill connection — 2026-10-19
+
+The [agent-first integration](firedrill/README.md) exact-pins CLI/SDK 2.2.2 and invokes the real backend API and AG-UI agent through the local ASGI callable seam. Chat uses the normal owned provider runtime; explicit state inspection needs no model. Operator approvals remain a separate API/UI action. Earlier pending-release notes are historical; authenticated saved runs and live model proof remain pending.
