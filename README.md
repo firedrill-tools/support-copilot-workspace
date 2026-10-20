@@ -102,7 +102,7 @@ Backend checks cover JSON/SSE completion, missing/partial/zero usage, compressed
 
 These controlled HTTP responses are not paid model judgments or billing evidence. Live factuality, ambiguity handling and injection resistance remain unmeasured. [Scenario briefs](scenarios/README.md) keep semantic criteria separate from exact financial checks. Live provider access, authenticated persisted Firedrill runs and license choices remain external gates. The included [Firedrill integration](firedrill/README.md) uses the actual backend and AG-UI runtime.
 
-Related applications: [Firedrill example catalog](https://github.com/firedrill-tools/firedrill-example-catalog). Product/setup: [Firedrill](https://firedrill.run/) and [official developer documentation](https://docs.firedrill.run/), matched to the qualified release.
+Related applications: [Firedrill examples](https://docs.firedrill.run/guides/examples). Product/setup: [Firedrill](https://firedrill.run/) and [official developer documentation](https://docs.firedrill.run/), matched to the qualified release.
 
 ## Current Firedrill connection — 2026-10-19
 
