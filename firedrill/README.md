@@ -1,4 +1,18 @@
-# Firedrill agent-first integration
+# Simulate this agent with Firedrill
+
+Firedrill is a simulation platform for AI agents. Your coding agent can prepare
+and operate these simulations; the application and its model run in your own
+repository or CI.
+
+Start in the repository root, not inside `firedrill/`:
+
+```sh
+npx firedrill-run init
+```
+
+Authorize Firedrill and select a project/environment. Installation choices are
+optional; skip them when using the locked `firedrill/` toolchain below. This setup
+does not invoke the target agent or grant it access to real business accounts.
 
 This optional toolchain exact-pins released CLI and TypeScript SDK **2.2.2**, verified October 19, 2026. Node 22+ is required. The application and frontend retain their original locked dependencies. A supported command target invokes the actual backend factory/router through production HTTPX ASGI transport; it does not inject a model/runtime factory or serve a hosted endpoint.
 
@@ -11,7 +25,6 @@ cd backend
 uv sync --locked --dev
 cd ..
 npm ci --prefix firedrill --ignore-scripts --no-audit --no-fund
-npm test --prefix firedrill
 firedrill_cli=firedrill/node_modules/@firedrill-run/cli/bin/firedrill.mjs
 node "$firedrill_cli" validate firedrill/scenario.json --json --non-interactive
 ```
@@ -20,7 +33,7 @@ Keep `uv` on PATH. For a self-contained backend source distribution, run `uv syn
 
 ## Select scope and execute
 
-Authorize/select the actual project/environment with `node "$firedrill_cli" init` in a human terminal. Automation supplies `FIREDRILL_TOKEN`, `FIREDRILL_PROJECT_ID` and `FIREDRILL_ENVIRONMENT_ID` through its secret store. Native chat independently requires `OPENAI_API_KEY` and an enabled `OPENAI_MODEL` or recipe `configuration.parameters.model`. Keep credentials out of recipes and Git.
+Authorize/select the actual project/environment with `npx firedrill-run init` in a human terminal. Automation supplies `FIREDRILL_TOKEN`, `FIREDRILL_PROJECT_ID` and `FIREDRILL_ENVIRONMENT_ID` through its secret store. Native chat independently requires `OPENAI_API_KEY` and an enabled `OPENAI_MODEL` or recipe `configuration.parameters.model`. Keep credentials out of recipes and Git.
 
 With an authorized model budget:
 
@@ -48,3 +61,11 @@ Preserve operation IDs and private journals after uncertainty. Use `--resume OPE
 Ordinary CI is offline, including the existing real Chromium flows. Configure actual scope, protected credentials and budgets before using the [live CI generator](https://docs.firedrill.run/guides/ci). Authenticated persisted cases, live model quality/cost, hosted-network proof, publication and licensing remain separate gates. Controlled loopback provider responses/usage in tests are synthetic.
 
 References: [SDK](https://docs.firedrill.run/sdk/typescript), [command targets](https://docs.firedrill.run/guides/callbacks), [operator MCP](https://docs.firedrill.run/guides/control-mcp).
+
+## Offline verification
+
+After installing the application dependencies and locked integration toolchain,
+run `npm test --prefix firedrill` to exercise the adapter checks. These checks are
+optional for first use and call no paid model. The Node 22+ requirement above is
+for the Firedrill clients; it does not lower any application runtime requirement
+in the root README.

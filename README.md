@@ -1,6 +1,20 @@
-# Support copilot workspace
+# Support copilot workspace with CopilotKit, LangGraph and Next.js
 
 A support workspace pairs a LangGraph/OpenAI agent with CopilotKit chat. The copilot reads fictional cases/orders and can save a refund proposal. Only the operator's approval endpoint changes the order and refund ledger. The browser polls committed records, so chat output and actual financial state can be inspected separately.
+
+## Simulate with Firedrill
+
+[Firedrill](https://firedrill.run/) is a simulation platform for AI agents.
+Start from this repository’s root:
+
+```sh
+npx firedrill-run init
+```
+
+Sign in and choose your project, then follow the [simulation run guide](firedrill/README.md)
+for application dependencies, a preview and the reviewed scenarios. Your agent runs
+locally or in your CI; model credentials stay separate from Firedrill sign-in.
+The included recipes record outcomes without an automatic quality score or CI gate.
 
 ## Run one case
 
@@ -84,7 +98,7 @@ Install Chromium first with `npx playwright install chromium`, and keep `uv` on 
 
 Backend checks cover JSON/SSE completion, missing/partial/zero usage, compressed fragmentation, cancellation, provider failure after a proposal, client/checkpoint cleanup, concurrent chat serialization, caller ownership, financial guards, all eight datasets and preservation of unrelated busy history. The build verifies a wheel produced from its source archive, then exercises both artifacts outside the checkout. The pinned AG-UI adapter currently emits a third-party deprecation warning for its LangGraph schema call; the exercised interface still passes. The frontend pins KaTeX `0.18.2` with matching CSS, addressing the [inherited trust-setting advisory](https://github.com/advisories/GHSA-238p-pmpm-9mq7). Source HTML is sanitized before math rendering, with URL hardening retained. The production chat case verifies a styled fraction and removal of script/JavaScript-link output. Full npm audit is clean at this snapshot.
 
-These controlled HTTP responses are not paid model judgments or billing evidence. Live factuality, ambiguity handling and injection resistance remain unmeasured. [Scenario briefs](scenarios/README.md) keep semantic criteria separate from exact financial checks. Live provider access, the released Firedrill contract and publication/license choices remain external gates. Add the thin integration against the qualified new release; no guessed/retired API or private platform code is included.
+These controlled HTTP responses are not paid model judgments or billing evidence. Live factuality, ambiguity handling and injection resistance remain unmeasured. [Scenario briefs](scenarios/README.md) keep semantic criteria separate from exact financial checks. Live provider access, authenticated persisted Firedrill runs and publication/license choices remain external gates. The included [Firedrill integration](firedrill/README.md) uses the actual backend and AG-UI runtime.
 
 Related applications: [Firedrill example catalog](https://github.com/firedrill-tools/firedrill-example-catalog). Product/setup: [Firedrill](https://firedrill.run/) and [official developer documentation](https://docs.firedrill.run/), matched to the qualified release.
 
